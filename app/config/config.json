@@ -1,0 +1,9 @@
+{
+  "secret" : "defd3e10cf193db23ed7c2ae86b7470dde32236976bde87e",
+  "db" : {
+    "tns" : "(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.2.16.206)(PORT = 1521)) ) (CONNECT_DATA = (SERVICE_NAME = bip) ) )",
+    "username": "etl",
+    "password" : "etl123"
+  },
+  "access_token_expire_second": 60
+}
