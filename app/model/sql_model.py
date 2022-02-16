@@ -3,6 +3,7 @@ from typing import Optional
 from sqlmodel import Field, SQLModel
 from datetime import date, datetime
 
+
 #
 # class Hero(SQLModel, table=True):
 #     id: Optional[int] = Field(default=None, primary_key=True)
@@ -23,16 +24,25 @@ class Users(SQLModel, table=True):
     created_date: datetime
     update_date: datetime
     is_active: bool
+    fullname: str
+    CCCD: str
+    Nation: str
+    Job: str
+    Ethnic: str
+    city: str
+    district: str
+    wards: str
+    userrole: str
 
 
 class Doctors(SQLModel, table=True):
     username: Optional[str] = Field(default=None, primary_key=True)
     fullname: str
     gender: str
-    specialist: str #chuyên khoa
+    specialist: str  # chuyên khoa
     note: str
-    examination_schedule: str #lịch khám bệnh đăng ký (như sáng t4, chiều t7,...)
-
+    examination_schedule: str  # lịch khám bệnh đăng ký (như sáng t4, chiều t7,...)
+    price: float
 
 
 class Appointments(SQLModel, table=True):
@@ -40,8 +50,8 @@ class Appointments(SQLModel, table=True):
     booking_date: date
     patient_username: str
     doctor_username: str
-    specialist: str #chuyên khoa
-    place: str  #dia diem
+    specialist: str  # chuyên khoa
+    place: str  # dia diem
     fromHour: int
     toHour: int
-    status: str  #trang thai
+    status: str  # trang thai
