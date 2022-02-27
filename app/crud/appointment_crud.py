@@ -65,26 +65,78 @@ def create_appointment(db: Session, appointment: Appointments):
     db.refresh(db_appointment)
     return db_appointment
 
+# code backup
+# def generate_appointment_of_doctor(db: Session, doctor: Doctors):
+#     furthest_booking_date = get_furthest_appointment_date_by_doctor_username(db, doctor.username)
+#     today = pd.to_datetime("today")
+#     if furthest_booking_date is not None and furthest_booking_date > today + timedelta(days=31):
+#         return True
+#     List_Appointments = []
+#     fromHour_range = []
+#     if doctor.examination_schedule == 'S3':
+#         booking_freq = 'W-TUE'
+#         booking_dates = pd.date_range(today, today + timedelta(days=60), freq=booking_freq)
+#     for each_date in booking_dates:
+#         if doctor.examination_schedule[0:1] == 'S':  # lich kham buoi sang
+#             fromHour_range = [8, 9, 10, 11, 12]
+#         elif doctor.examination_schedule[0:1] == 'C':  # buoi chieu
+#             fromHour_range = [13, 14, 15, 16, 17]
+#         for fromHour in fromHour_range:
+#             newAppointment = Appointments(doctor_username=doctor.username, booking_date=each_date,
+#                                           fromHour=fromHour, toHour=fromHour + 1, status="AVAILABLE")
+#             List_Appointments.append(newAppointment)
+#
+#     db.add_all(List_Appointments)
+#     # db.add(Appointments[0])
+#     db.commit()
+#     # db.refresh(List_Appointments)
+#     return True
 
+# hàm generate lịch khám của bác sỹ dựa vào thông tin đăng ký khám trên DB
 def generate_appointment_of_doctor(db: Session, doctor: Doctors):
     furthest_booking_date = get_furthest_appointment_date_by_doctor_username(db, doctor.username)
     today = pd.to_datetime("today")
+    start_day = today
+    # nếu đã generate lịch làm việc trong 1 tháng từ hiện tại rồi, thì return luôn
     if furthest_booking_date is not None and furthest_booking_date > today + timedelta(days=31):
         return True
+    # thực hiện generate lịch làm việc trong vòng 2 tháng kể từ ngày xa nhất có lịch
+    if furthest_booking_date is not None and furthest_booking_date > today:
+        start_day = furthest_booking_date
+
     List_Appointments = []
     fromHour_range = []
-    if doctor.examination_schedule == 'S3':
-        booking_freq = 'W-TUE'
-        booking_dates = pd.date_range(today, today + timedelta(days=60), freq=booking_freq)
-    for each_date in booking_dates:
-        if doctor.examination_schedule[0:1] == 'S':  # lich kham buoi sang
-            fromHour_range = [8, 9, 10, 11, 12]
-        elif doctor.examination_schedule[0:1] == 'C':  # buoi chieu
-            fromHour_range = [13, 14, 15, 16, 17]
-        for fromHour in fromHour_range:
-            newAppointment = Appointments(doctor_username=doctor.username, booking_date=each_date,
-                                          fromHour=fromHour, toHour=fromHour + 1, status="AVAILABLE")
-            List_Appointments.append(newAppointment)
+    weekly_schedule_dictionary = {
+        "S2": "W-MON",
+        "S3": "W-TUE",
+        "S4": "W-WED",
+        "S5": "W-THU",
+        "S6": "W-FRI",
+        "S7": "W-SAT",
+        "S8": "W-SUN",
+        "C2": "W-MON",
+        "C3": "W-TUE",
+        "C4": "W-WED",
+        "C5": "W-THU",
+        "C6": "W-FRI",
+        "C7": "W-SAT",
+        "C8": "W-SUN"
+    }
+
+    # convert lịch làm việc bs từ string sang list (phân cách bởi dấu , như "S3,S4,C8")
+    list_schedules = list(doctor.examination_schedule.replace(" ", "").split(","))
+    for each_schedule in list_schedules:
+        booking_freq = weekly_schedule_dictionary.get(each_schedule)
+        booking_dates = pd.date_range(start_day, start_day + timedelta(days=60), freq=booking_freq)
+        for each_date in booking_dates:
+            if each_schedule[0:1] == 'S':  # lich kham buoi sang
+                fromHour_range = [8, 9, 10, 11, 12]
+            elif each_schedule[0:1] == 'C':  # buoi chieu
+                fromHour_range = [13, 14, 15, 16, 17]
+            for fromHour in fromHour_range:
+                newAppointment = Appointments(doctor_username=doctor.username, booking_date=each_date,
+                                              fromHour=fromHour, toHour=fromHour + 1, status="AVAILABLE")
+                List_Appointments.append(newAppointment)
 
     db.add_all(List_Appointments)
     # db.add(Appointments[0])
