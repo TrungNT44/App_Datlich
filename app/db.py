@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import urllib
-#import app.app_config as config
+import app.app_config as config
 
 # engine1 = create_engine(
 #     config.db_url,
@@ -21,13 +21,6 @@ params = urllib.parse.quote_plus("'DRIVER={ODBC Driver 17 for SQL Server};SERVER
 
 Database_con = f'mssql://{username}:{password}@{server}/{database}?driver={driver}'
 engine = create_engine(Database_con)
-#con = engine.connect()
-
-#data = pd.read_sql_query("select * from dbo.file_khaosat_hd_giangday", con)
-#print(data)
-#engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
-#engine = create_engine('mssql+pyodbc://sa:Dell1234@DESKTOP-4059RIE\SQLSERVER2019?driver=SQL+Server+Native+Client+11.0')
-#engine = create_engine('mssql+pyodbc://sa:Dell1234@localhost/University?driver=ODBC+Driver+17+for+SQL+Server')
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

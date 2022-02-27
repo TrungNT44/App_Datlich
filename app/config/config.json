@@ -1,9 +1,12 @@
 {
-  "secret" : "defd3e10cf193db23ed7c2ae86b7470dde32236976bde87e",
+  "secret" : "903b23dc56d0790bf74b31b004b662f711073c22b63e923e4af3bd732804eb02",
   "db" : {
-    "tns" : "(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.2.16.206)(PORT = 1521)) ) (CONNECT_DATA = (SERVICE_NAME = bip) ) )",
-    "username": "etl",
-    "password" : "etl123"
+    "db_server" : "DESKTOP-4059RIE\\SQLSERVER2019",
+    "username": "sa",
+    "password" : "Dell1234",
+    "database" : "University",
+    "driver" : "ODBC Driver 17 for SQL Server"
   },
-  "access_token_expire_second": 60
+  "ACCESS_TOKEN_EXPIRE_MINUTES": 60,
+  "ALGORITHM": "HS256"
 }

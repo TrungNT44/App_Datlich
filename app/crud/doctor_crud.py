@@ -18,17 +18,19 @@ def create_doctor(db: Session, doctor: Doctors):
     db.refresh(db_doctor)
     return db_doctor
 
-# def update_user_by_username(db: Session, update_user: Users):
-#     statement = select(Doctors).where(Doctors.username == update_user.username)
-#     user = db.exec(statement).one()
-#     user.password = update_user.password
-#     user.address = update_user.address
-#
-#     db.add(user)
-#     db.commit()
-#     db.refresh(user)
-#     return user
-#
+def update_doctor_by_username(db: Session, doctor: Doctors):
+    statement = select(Doctors).where(Doctors.username == doctor.username)
+    update_doctor = db.exec(statement).one()
+    update_doctor.specialist = doctor.specialist
+    update_doctor.examination_schedule = doctor.examination_schedule
+    update_doctor.note = doctor.note
+    update_doctor.price = doctor.price
+
+    db.add(update_doctor)
+    db.commit()
+    db.refresh(update_doctor)
+    return update_doctor
+
 def delete_doctor_by_username(db: Session, username: str):
     statement = select(Doctors).where(Doctors.username == username)
     doctor = db.exec(statement).one()
