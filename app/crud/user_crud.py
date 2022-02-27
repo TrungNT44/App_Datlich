@@ -2,6 +2,7 @@ from datetime import date
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from app.model.sql_model import Users
 import pandas as pd
+from app.crud import doctor_crud
 #
 # def get_user(db: Session, user_id: int):
 #     return db.query(models.User).filter(models.User.userid == user_id).first()
@@ -67,5 +68,7 @@ def delete_user_by_username(db: Session, username: str):
     if user is None:
         return False
     db.delete(user)
+    if user.userrole == "BS":
+        doctor_crud.delete_doctor_by_username(db, username=username)
     db.commit()
     return True

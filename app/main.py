@@ -151,7 +151,14 @@ def create_user(user: sql_model.Users, db: Session = Depends(get_session)):
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     new_user = user_crud.create_user(db=db, user=user)
-    data = sql_model.UserResponse(username=new_user.username,password=new_user.password,userrole=new_user.userrole)
+
+    # neu user dky là BS thì insert row vào cả bảng Bác sỹ
+    if new_user.userrole == 'BS':
+        new_doctor = sql_model.Doctors(username=user.username, fullname=user.fullname, gender=user.gender,
+                                       specialist="", note="", examination_schedule="", price=0)
+        doctor_crud.create_doctor(db, new_doctor)
+
+    data = sql_model.UserResponse(username=new_user.username, password=new_user.password, userrole=new_user.userrole)
     return {
         "data": data,
         "status": 200,
@@ -178,10 +185,10 @@ def delete_user(username: str, db: Session = Depends(get_session)):
     if not result:
         raise HTTPException(status_code=400, detail="User does not exist")
     return {
-            "data": result,
-            "status": 200,
-            "detail": "OK"
-        }
+        "data": result,
+        "status": 200,
+        "detail": "OK"
+    }
 
 
 # Cum API Bac sy

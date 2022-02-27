@@ -95,6 +95,8 @@ def create_appointment(db: Session, appointment: Appointments):
 # hàm generate lịch khám của bác sỹ dựa vào thông tin đăng ký khám trên DB
 def generate_appointment_of_doctor(db: Session, doctor: Doctors):
     furthest_booking_date = get_furthest_appointment_date_by_doctor_username(db, doctor.username)
+    if doctor.examination_schedule is None or doctor.examination_schedule == "":
+        return True
     today = pd.to_datetime("today")
     start_day = today
     # nếu đã generate lịch làm việc trong 1 tháng từ hiện tại rồi, thì return luôn
@@ -103,7 +105,6 @@ def generate_appointment_of_doctor(db: Session, doctor: Doctors):
     # thực hiện generate lịch làm việc trong vòng 2 tháng kể từ ngày xa nhất có lịch
     if furthest_booking_date is not None and furthest_booking_date > today:
         start_day = furthest_booking_date
-
     List_Appointments = []
     fromHour_range = []
     weekly_schedule_dictionary = {
